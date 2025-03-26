@@ -1,6 +1,11 @@
+const images = ["characters/cat1.png","characters/cat2.png","characters/cat3.png","characters/cat4.png","characters/cat5.png","characters/cat6.png"];
+
 function createPixelObject() {
     let pixel = document.createElement("img");
-    pixel.src = chrome.runtime.getURL("characters/cat2.png"); 
+
+    let randomImage = images[Math.floor(Math.random() * images.length)];
+    pixel.src = chrome.runtime.getURL(randomImage);
+
     pixel.style.position = "absolute";
     pixel.style.width = "30px";
     pixel.style.height = "30px";

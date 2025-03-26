@@ -15,7 +15,7 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["characters/cat2.png"],
+            "resources": ["characters/cat1.png","characters/cat2.png","characters/cat3.png","characters/cat4.png","characters/cat5.png","characters/cat6.png"],
             "matches": ["<all_urls>"]
         }
     ],
