@@ -1,27 +1,20 @@
 {
-    "manifest_version": 3,
-    "name": "Pixel Hunt Game",
-    "version": "1.0",
-    "description": "Find hidden pixel objects on web pages!",
-    "icons": { "128": "characters/cat1.png" },
-    "permissions": ["storage"],
-    "host_permissions": ["<all_urls>"],
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"],
-        "css": ["styles.css"]
-      }
-    ],
-    "web_accessible_resources": [
-        {
-            "resources": ["characters/cat1.png","characters/cat2.png","characters/cat3.png","characters/cat4.png","characters/cat5.png","characters/cat6.png"],
-            "matches": ["<all_urls>"]
-        }
-    ],
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": "characters/cat1.png"
+  "manifest_version": 3,
+  "name": "Pixel-hunt",
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "characters/cat1.png"
+  },
+  "permissions": ["scripting", "storage", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["characters/*.png"],
+      "matches": ["<all_urls>"]
     }
-  }
-  
+  ]
+}
