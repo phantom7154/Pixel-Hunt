@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Pixel-hunt",
+  "name": "Pixel Hunt",
   "version": "1.0.0",
+  "description": "Multiplayer pixel hunt game with leaderboard.",
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": "characters/cat1.png"
+    "default_popup": "popup.html"
   },
   "permissions": ["scripting", "storage", "tabs"],
   "background": {
@@ -13,7 +13,7 @@
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
-      "resources": ["characters/*.png"],
+      "resources": ["assets/*.png"],
       "matches": ["<all_urls>"]
     }
   ]

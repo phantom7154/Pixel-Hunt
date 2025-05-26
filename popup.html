@@ -1,13 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head><title>Pixel Pursuit</title></head>
+<head>
+  <title>Pixel Pursuit</title>
+  <style>
+    body { font-family: sans-serif; padding: 10px; width: 300px; }
+    input, button { width: 100%; padding: 5px; margin-top: 10px; }
+    #stopBtn { display: none; }
+  </style>
+</head>
 <body>
-  <button id="toggle-game">Start Game</button><br>
-  <label>
-    <input type="checkbox" id="auto-start" />
-    Auto-start next time
-  </label>
+  <h2>Pixel Pursuit</h2>
+  <input id="nameInput" placeholder="Enter your name" />
+  <button id="startBtn" disabled>Start Game</button>
+  <button id="stopBtn">Stop Game</button>
 
+  <h3>Score</h3>
+  <p>Current: <span id="currentScore">--</span> ms</p>
+  <p>High Score: <span id="highScore">--</span> ms</p>
+
+  <h3>Leaderboard</h3>
+  <div id="leaderboard">Loading...</div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAqy47Ox8Hbu_G75ftfl5Esyi4L67O5fs",
+      authDomain: "pixel-hunt-33f06.firebaseapp.com",
+      databaseURL: "https://pixel-hunt-33f06-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "pixel-hunt-33f06",
+      storageBucket: "pixel-hunt-33f06.firebasestorage.app",
+      messagingSenderId: "997313935059",
+      appId: "1:997313935059:web:cbc837d3cc611efea30626"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
   <script src="popup.js"></script>
 </body>
 </html>

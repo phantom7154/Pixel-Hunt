@@ -1,74 +1,60 @@
-const images = ["characters/cat1.png","characters/cat2.png","characters/cat3.png","characters/cat4.png","characters/cat5.png","characters/cat6.png"];
-
 (function () {
-    // Prevent multiple instances
-    if (window.pixelPursuitActive) return;
-    window.pixelPursuitActive = true;
-  
-    const pixelId = "pixel-hunt";
-    const existing = document.getElementById(pixelId);
-    if (existing) existing.remove();
-  
-    // Create pixel
-    const pixel = document.createElement("div");
-    let randomImage = images[Math.floor(Math.random() * images.length)];
-    pixel.id = pixelId;
+  if (window.pixelPursuitActive) return;
+  window.pixelPursuitActive = true;
+
+  let currentPixel;
+  let startTime;
+
+  function createPixel() {
+    if (currentPixel) currentPixel.remove();
+
+    const images = ["cat1.png", "cat2.png", "cat3.png"];
+    const randomImage = images[Math.floor(Math.random() * images.length)];
+    const imageURL = chrome.runtime.getURL("assets/" + randomImage);
+
+    const pixel = document.createElement("img");
+    pixel.src = imageURL;
+    pixel.id = "pixel-hunt";
     Object.assign(pixel.style, {
       position: "fixed",
-      width: "20px",
-      height: "20px",
-      backgroubdImage: chrome.runtime.getURL(randomImage),
-      borderRadius: "50%",
+      width: "40px",
+      height: "40px",
       zIndex: 999999,
-      top: "50%",
-      left: "50%",
-      transition: "top 0.1s linear, left 0.1s linear",
-      cursor: "pointer",
+      top: `${Math.random() * 80 + 10}%`,
+      left: `${Math.random() * 80 + 10}%`,
+      cursor: "pointer"
     });
-  
+
     document.body.appendChild(pixel);
-  
-    // Initial position
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-    let x = Math.random() * (screenW - 40);
-    let y = Math.random() * (screenH - 40);
-    pixel.style.left = `${x}px`;
-    pixel.style.top = `${y}px`;
-  
-    let startTime = performance.now();
-  
-    // Avoidance logic
-    document.addEventListener("mousemove", onMouseMove);
-  
-    function onMouseMove(e) {
-      const dx = e.clientX - x;
-      const dy = e.clientY - y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-  
-      if (distance < 100) {
-        // Move away from mouse
-        const angle = Math.atan2(dy, dx);
-        x -= Math.cos(angle) * 50;
-        y -= Math.sin(angle) * 50;
-  
-        // Clamp position within viewport
-        x = Math.max(0, Math.min(screenW - 20, x));
-        y = Math.max(0, Math.min(screenH - 20, y));
-  
-        pixel.style.left = `${x}px`;
-        pixel.style.top = `${y}px`;
-      }
-    }
-  
-    // Click to stop timer
+    currentPixel = pixel;
+    startTime = performance.now();
+
     pixel.addEventListener("click", () => {
       const endTime = performance.now();
       const reactionTime = (endTime - startTime).toFixed(2);
-      alert(`🎉 You clicked it in ${reactionTime} ms`);
-      pixel.remove();
-      window.pixelPursuitActive = false;
-      document.removeEventListener("mousemove", onMouseMove);
+
+      chrome.storage.sync.get("pixelPursuitName", ({ pixelPursuitName }) => {
+        const name = pixelPursuitName || "Anonymous";
+
+        // Save to Firebase
+        fetch("https://pixel-hunt-33f06-default-rtdb.asia-southeast1.firebasedatabase.app/leaderboard.json", {
+          method: "POST",
+          body: JSON.stringify({ name, time: parseFloat(reactionTime), timestamp: Date.now() })
+        });
+
+        // Store score locally
+        chrome.storage.local.set({ currentScore: reactionTime });
+        chrome.storage.local.get(["highScore"], ({ highScore }) => {
+          if (!highScore || parseFloat(reactionTime) < parseFloat(highScore)) {
+            chrome.storage.local.set({ highScore: reactionTime });
+          }
+        });
+
+        currentPixel.remove();
+        setTimeout(createPixel, 3000); // respawn after 3 seconds
+      });
     });
-  })();
-  
+  }
+
+  createPixel();
+})();
