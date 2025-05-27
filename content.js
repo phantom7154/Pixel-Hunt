@@ -3,11 +3,10 @@
   window.pixelPursuitActive = true;
 
   const { pixelPursuitName } = await chrome.storage.sync.get("pixelPursuitName");
-  const name = pixelPursuitName || "Anonymous";
-
   const { aiEvasionEnabled } = await chrome.storage.sync.get("aiEvasionEnabled");
   const { gameMode } = await chrome.storage.local.get("gameMode");
 
+  const name = pixelPursuitName || "Anonymous";
   let pixel, startTime;
   let streakCount = 0;
   let timeAttackClicks = 0;
@@ -15,16 +14,16 @@
 
   if (gameMode === "streak") {
     setTimeout(() => {
-      alert(`🕹️ Streak over! You clicked ${streakCount} pixels.`);
+      alert(`🔥 Streak Mode Over!\nYou clicked ${streakCount} pixels.`);
       window.pixelPursuitActive = false;
-      pixel?.remove();
-    }, 30000); // 30s
+      document.querySelectorAll("#pixel-hunt").forEach(el => el.remove());
+    }, 30000);
   }
 
-  async function spawnPixel() {
+  function spawnPixel() {
     if (pixel) pixel.remove();
 
-    const images = ["cat1.png", "cat2.png", "cat3.png"];
+    const images = ["cat1.png", "cat2.png", "cat3.png", "cat4.png", "cat5.png", "cat6.png"];
     const src = chrome.runtime.getURL("assets/" + images[Math.floor(Math.random() * images.length)]);
 
     pixel = document.createElement("img");
@@ -32,8 +31,8 @@
     pixel.id = "pixel-hunt";
     Object.assign(pixel.style, {
       position: "fixed",
-      width: "40px",
-      height: "40px",
+      width: "20px",
+      height: "20px",
       zIndex: 999999,
       top: `${Math.random() * 80 + 10}%`,
       left: `${Math.random() * 80 + 10}%`,
@@ -50,7 +49,7 @@
       const reactionTime = (now - startTime).toFixed(2);
 
       if (gameMode === "normal") {
-        recordScore(name, reactionTime);
+        recordScore(reactionTime);
         setTimeout(spawnPixel, 3000);
 
       } else if (gameMode === "streak") {
@@ -63,9 +62,10 @@
 
         if (timeAttackClicks >= 10) {
           const total = (now - timeAttackStart).toFixed(2);
-          alert(`⏱️ Time Attack complete in ${total} ms`);
-          recordScore(name, total);
+          alert(`⚡ Time Attack Complete!\nTotal Time: ${total} ms`);
+          recordScore(total);
           window.pixelPursuitActive = false;
+          return;
         } else {
           setTimeout(spawnPixel, 200);
         }
@@ -92,22 +92,24 @@
     }
   }
 
-  function recordScore(name, score) {
-    fetch("https://pixel-hunt-33f06-default-rtdb.asia-southeast1.firebasedatabase.app/leaderboard.json", {
-      method: "POST",
-      body: JSON.stringify({ name, time: parseFloat(score), timestamp: Date.now() })
-    });
-
-    chrome.storage.local.set({ currentScore: score });
-    chrome.storage.local.get(["highScore", "totalClicks", "totalTime"], (data) => {
+  function recordScore(reactionTime) {
+    chrome.storage.local.set({ currentScore: reactionTime });
+    chrome.storage.local.get(["highScore", "totalClicks", "totalTime", "leaderboard"], (data) => {
       const hs = data.highScore;
       const totalClicks = (data.totalClicks || 0) + 1;
-      const totalTime = (parseFloat(data.totalTime || 0) + parseFloat(score)).toFixed(2);
+      const totalTime = (parseFloat(data.totalTime || 0) + parseFloat(reactionTime)).toFixed(2);
+      const leaderboard = data.leaderboard || [];
 
-      if (!hs || parseFloat(score) < parseFloat(hs)) {
-        chrome.storage.local.set({ highScore: score });
+      if (!hs || parseFloat(reactionTime) < parseFloat(hs)) {
+        chrome.storage.local.set({ highScore: reactionTime });
       }
-      chrome.storage.local.set({ totalClicks, totalTime });
+
+      const newEntry = { name, time: parseFloat(reactionTime), timestamp: Date.now() };
+      leaderboard.push(newEntry);
+      leaderboard.sort((a, b) => a.time - b.time);
+      const top5 = leaderboard.slice(0, 5);
+
+      chrome.storage.local.set({ totalClicks, totalTime, leaderboard: top5 });
     });
   }
 

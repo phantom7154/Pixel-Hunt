@@ -1,16 +1,16 @@
 {
   "manifest_version": 3,
   "name": "Pixel Pursuit",
-  "version": "2.0.0",
-  "description": "Multiplayer reflex game with AI-evasive pixel and real-time leaderboard.",
+  "version": "2.0.1",
+  "description": "Reflex game with AI-evasion, game modes, and local stats tracking.",
   "action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["scripting", "storage", "tabs"],
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
       "resources": ["assets/*.png"],
