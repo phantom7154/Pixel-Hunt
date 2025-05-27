@@ -11,17 +11,28 @@
 <body>
   <h2>Pixel Pursuit</h2>
   <input id="nameInput" placeholder="Enter your name" />
+  <label><input type="checkbox" id="aiToggle" /> Enable AI-Evasive Pixel</label>
+  <label><input type="checkbox" id="autoStartToggle" /> Auto Start on Browser Launch</label>
+
+<label for="modeSelect">Game Mode:</label>
+<select id="modeSelect">
+  <option value="normal">Normal</option>
+  <option value="streak">Streak (30s)</option>
+  <option value="timeattack">Time Attack (10 clicks)</option>
+</select>
+
   <button id="startBtn" disabled>Start Game</button>
   <button id="stopBtn">Stop Game</button>
 
-  <h3>Score</h3>
-  <p>Current: <span id="currentScore">--</span> ms</p>
+  <h3>Stats</h3>
+  <p>Current Score: <span id="currentScore">--</span> ms</p>
   <p>High Score: <span id="highScore">--</span> ms</p>
+  <p>Average Time: <span id="avgTime">--</span> ms</p>
+  <p>Total Clicks: <span id="totalClicks">--</span></p>
 
   <h3>Leaderboard</h3>
   <div id="leaderboard">Loading...</div>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
   <script>
@@ -30,7 +41,7 @@
       authDomain: "pixel-hunt-33f06.firebaseapp.com",
       databaseURL: "https://pixel-hunt-33f06-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "pixel-hunt-33f06",
-      storageBucket: "pixel-hunt-33f06.firebasestorage.app",
+      storageBucket: "pixel-hunt-33f06.appspot.com",
       messagingSenderId: "997313935059",
       appId: "1:997313935059:web:cbc837d3cc611efea30626"
     };

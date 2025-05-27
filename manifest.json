@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Pixel Hunt",
-  "version": "1.0.0",
-  "description": "Multiplayer pixel hunt game with leaderboard.",
+  "name": "Pixel Pursuit",
+  "version": "2.0.0",
+  "description": "Multiplayer reflex game with AI-evasive pixel and real-time leaderboard.",
   "action": {
     "default_popup": "popup.html"
   },
